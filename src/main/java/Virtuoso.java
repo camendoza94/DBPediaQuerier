@@ -3,12 +3,11 @@ import org.apache.jena.query.QueryExecutionFactory;
 import org.apache.jena.query.QueryFactory;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
-import org.apache.jena.query.ResultSetFormatter;
 
 import java.util.ArrayList;
 
 public class Virtuoso {
-    public static ArrayList<Artist> queryArtists() {
+    private static ArrayList<Artist> queryArtists() {
         ArrayList<Artist> artists = new ArrayList<Artist>();
         String qs = "prefix rdfs:    <http://www.w3.org/2000/01/rdf-schema#>\n"
                 + "prefix xsd:   <http://www.w3.org/2001/XMLSchema#> \n"

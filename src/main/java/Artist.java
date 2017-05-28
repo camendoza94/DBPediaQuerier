@@ -3,13 +3,13 @@ public class Artist {
     private String nacionality;
     private int birthYear;
 
-    public Artist(String name, String nacionality, int birthYear) {
+    Artist(String name, String nacionality, int birthYear) {
         this.name = name;
         this.nacionality = nacionality;
         this.birthYear = birthYear;
     }
 
-    public String getNacionality() {
+    String getNacionality() {
         return nacionality;
     }
 
@@ -17,7 +17,7 @@ public class Artist {
         this.nacionality = nacionality;
     }
 
-    public int getBirthYear() {
+    int getBirthYear() {
         return birthYear;
     }
 
@@ -25,7 +25,7 @@ public class Artist {
         this.birthYear = birthYear;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
