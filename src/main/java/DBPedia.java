@@ -81,8 +81,8 @@ public class DBPedia {
             while (line != null) {
                 line = br.readLine();
                 String[] uris = new String[2];
-                uris[0] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[1].trim().split(".")[0].trim();
-                uris[1] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[0].trim();
+                uris[1] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[1].trim().split(".")[0].trim();
+                uris[0] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[0].trim();
                 linking.add(uris);
             }
         } catch (FileNotFoundException e) {
