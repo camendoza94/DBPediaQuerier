@@ -7,7 +7,7 @@ public class DBPedia {
     private static final String URI = "<http://www.grupo1.semanticweb.uniandes.edu.co/curso/arte#";
 
     private static void queryArtists(ArrayList<String[]> linking) {
-        String[][] data = {{"dbo:field", "field"}, {"dbo:movement", "movement"}, {"dbo:birthDate", "birthDate"}, {"dbo:birthPlace", "birthPlace"}, {"dbo:deathDate", "deathDate"}, {"dbo:deathPlace", "deathPlace"}, {"dbo:birthName", "birtName"}, {"dbo:nationality", "nationality"}};
+        String[][] data = {{"dbo:field", "field"}, {"dbo:movement", "movement"}, {"dbo:birthPlace", "birthPlace"}, {"dbo:deathPlace", "deathPlace"}, {"dbo:nationality", "nationality"}};
         for (String[] pair : data) {
             query(linking, pair[0], pair[1]);
         }
@@ -26,7 +26,6 @@ public class DBPedia {
                     + "?uri " + dataset + " ?" + ont + ".\n"
                     + "FILTER (?uri = " + uri[1] + ")\n"
                     + "}";
-
             QueryExecution exec = QueryExecutionFactory.sparqlService("http://dbpedia.org/sparql", QueryFactory.create(qs));
 
             ResultSet results = exec.execSelect();
@@ -34,10 +33,8 @@ public class DBPedia {
             while (results.hasNext()) {
                 QuerySolution next = results.next();
                 String link = next.get(ont).toString().split("\\^")[0];
-                printLinking(uri[0], ont, link);
+                printLinking(uri[0], ont, link, true);
             }
-
-            ResultSetFormatter.out(results);
         }
     }
 
@@ -58,35 +55,36 @@ public class DBPedia {
             while (results.hasNext()) {
                 QuerySolution next = results.next();
                 String link = next.get(ont).toString().split("\\^")[0];
-                printLinking(link, ont, uri[0]);
+                printLinking(link, ont, uri[0], false);
             }
-
-            ResultSetFormatter.out(results);
         }
     }
 
-    private static void printLinking(String instance, String relation, String link) {
-        try (FileWriter fw = new FileWriter("output", true);
+    private static void printLinking(String instance, String relation, String link, boolean dataFirst) {
+        try (FileWriter fw = new FileWriter("linkageRelacion.ttl", true);
              BufferedWriter bw = new BufferedWriter(fw);
              PrintWriter out = new PrintWriter(bw)) {
-            out.println(instance + " " + URI + relation + "> " + link + " .\n");
-        } catch (IOException e) {
+            if (dataFirst)
+                out.println(instance + " " + URI + relation + "> <" + link + "> .");
+            else
+                out.println("<" + instance + "> " + URI + relation + "> " + link + " .");
+        } catch (IOException ignored) {
         }
     }
 
     private static ArrayList<String[]> readOutput() {
         ArrayList<String[]> linking = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader("output"))) {
+        try (BufferedReader br = new BufferedReader(new FileReader("linkageIdentidad.ttl"))) {
             String line = br.readLine();
             while (line != null) {
-                line = br.readLine();
+                System.out.println(line);
                 String[] uris = new String[2];
-                uris[1] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[1].trim().split(".")[0].trim();
+                String ont = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[1].trim();
+                uris[1] = ont.substring(0, ont.length() - 1);
                 uris[0] = line.split("<http://www.w3.org/2002/07/owl#sameAs>")[0].trim();
                 linking.add(uris);
+                line = br.readLine();
             }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
